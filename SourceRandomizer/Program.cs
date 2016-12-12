@@ -60,9 +60,9 @@ namespace SourceRandomizer
 
             var rnd = new Random(Environment.TickCount);
 
-            var searchTemplate = comment + "[{0}{1}]\r";
+            var searchTemplate = comment + "[{1}{0}]";
             var openTemplate = string.Empty;
-            var closeTemplae = " /";
+            var closeTemplae = "/";
 
             foreach (var sourcePath in _sourcePaths)
             {
@@ -70,7 +70,7 @@ namespace SourceRandomizer
                 var modFile = sourceFile;
 
                 // SwapLines
-                var swapLinesOpenTag = searchTemplate.Replace("{0}", "swap_lines").Replace("{1}", openTemplate) + '\n';
+                var swapLinesOpenTag = searchTemplate.Replace("{0}", "swap_lines").Replace("{1}", openTemplate) + "\n";
                 var swapLinesCloseTag = searchTemplate.Replace("{0}", "swap_lines").Replace("{1}", closeTemplae);
                 List<string> swapLinesMatchesList = new List<string>();
 
@@ -115,9 +115,12 @@ namespace SourceRandomizer
                     for (int i = 0; i < modLinesArray.Length; i++)
                     {
                         modLines += modLinesArray[i];
+                        modLines += '\n';
 
+                        /*
                         if (i + 1 < modLinesArray.Length)
                             modLines += '\n';
+                        */
                     }
 
                     // Replace
@@ -173,7 +176,7 @@ namespace SourceRandomizer
 
                 return output;
             }
-            catch
+            catch (Exception ex)
             {
                 return string.Empty;
             }
