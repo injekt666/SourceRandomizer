@@ -152,7 +152,8 @@ namespace SourceRandomizer
                         // Create output
                         foreach (string line in linesRandomized)
                         {
-                            output += line;
+                            var tempLine = line.Insert(1, "/*[temp]*/");
+                            output += tempLine;
                             output += _sourceLineFormat;
                         }
 
@@ -186,14 +187,14 @@ namespace SourceRandomizer
                         // Replace
                         for (int i = 0; i < blocks.Count; i++)
                         {
-                            blocksRandomized[i] = blocksRandomized[i].Insert(1, "/*[temp]*/");
-                            modFile = modFile.Replace(blocks[i], blocksRandomized[i]);
+                            var tempBlock = blocksRandomized[i].Insert(1, "/*[temp]*/");
+                            modFile = modFile.Replace(blocks[i], tempBlock);
                         }
-                        
-                        // Remove temp
-                        modFile = modFile.Replace("/*[temp]*/", string.Empty);
                     }
                 }
+
+                // Remove temp
+                modFile = modFile.Replace("/*[temp]*/", string.Empty);
 
                 // Save randomized file
                 if (modFile != sourceFile && modFile != string.Empty)
