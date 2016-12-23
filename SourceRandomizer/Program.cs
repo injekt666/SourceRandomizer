@@ -6,8 +6,9 @@ namespace SourceRandomizer
 {
     class Program
     {
+        private static readonly List<string> SourcePaths = new List<string>();
         private static string _sourceExtension;
-        private static List<string> _sourcePaths = new List<string>();
+        private static string _sourceLineEnding;
 
         public static void Main(string[] args)
         {
@@ -28,6 +29,14 @@ namespace SourceRandomizer
 
                     case "-c":
                         comment = args[i + 1];
+                        break;
+
+                    case "-lf":
+                        _sourceLineEnding = "\n";
+                        break;
+
+                    case "-crlf":
+                        _sourceLineEnding = "\r\n";
                         break;
                 }
             }
@@ -53,6 +62,13 @@ namespace SourceRandomizer
                 Environment.Exit(1);
             }
 
+            if (_sourceLineEnding == string.Empty)
+            {
+                Console.WriteLine("Line ending not found (-lf/-crlf)");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
+
             if (!_sourceExtension.Contains("."))
                 _sourceExtension = "." + _sourceExtension;
 
@@ -64,15 +80,16 @@ namespace SourceRandomizer
             var openTemplate = string.Empty;
             var closeTemplae = "/";
 
-            foreach (var sourcePath in _sourcePaths)
+            // Foreach file found
+            foreach (var sourcePath in SourcePaths)
             {
                 var sourceFile = File.ReadAllText(sourcePath);
                 var modFile = sourceFile;
 
-                // SwapLines
-                var swapLinesOpenTag = searchTemplate.Replace("{0}", "swap_lines").Replace("{1}", openTemplate) + "\n";
+                // Swap lines
+                var swapLinesOpenTag = searchTemplate.Replace("{0}", "swap_lines").Replace("{1}", openTemplate) + _sourceLineEnding;
                 var swapLinesCloseTag = searchTemplate.Replace("{0}", "swap_lines").Replace("{1}", closeTemplae);
-                List<string> swapLinesMatchesList = new List<string>();
+                var swapLinesMatchesList = new List<string>();
 
                 // Get all matches
                 for (int i = 0; i < int.MaxValue; i++)
@@ -88,7 +105,7 @@ namespace SourceRandomizer
                 // Foreach match
                 foreach (var match in swapLinesMatchesList)
                 {
-                    var lines = match.Split('\n');
+                    var lines = match.Split(new[] { _sourceLineEnding }, StringSplitOptions.None);
                     var modLinesArray = new string[lines.Length - 1];
                     var modLines = string.Empty;
 
@@ -112,15 +129,10 @@ namespace SourceRandomizer
                     }
 
                     // Create replace
-                    for (int i = 0; i < modLinesArray.Length; i++)
+                    foreach (string line in modLinesArray)
                     {
-                        modLines += modLinesArray[i];
-                        modLines += '\n';
-
-                        /*
-                        if (i + 1 < modLinesArray.Length)
-                            modLines += '\n';
-                        */
+                        modLines += line;
+                        modLines += _sourceLineEnding;
                     }
 
                     // Replace
@@ -130,7 +142,6 @@ namespace SourceRandomizer
                 // Save randomized file
                 if (modFile != sourceFile)
                 {
-                    File.WriteAllText(sourcePath + ".backup", sourceFile);
                     File.WriteAllText(sourcePath, modFile);
                 }
             }
@@ -148,7 +159,7 @@ namespace SourceRandomizer
                 if (extension != _sourceExtension)
                     continue;
 
-                _sourcePaths.Add(file);
+                SourcePaths.Add(file);
             }
 
             var directories = Directory.GetDirectories(path);
@@ -163,20 +174,20 @@ namespace SourceRandomizer
             try
             {
                 var result = source.Split(new[] { p1 }, StringSplitOptions.None)[offset + 1];
-                var resultLines = result.Split('\n');
+                var resultLines = result.Split(new [] { _sourceLineEnding }, StringSplitOptions.None);
                 var output = string.Empty;
 
-                for (int i = 0; i < resultLines.Length; i++)
+                foreach (string line in resultLines)
                 {
-                    if (resultLines[i].Contains(p2))
+                    if (line.Contains(p2))
                         break;
 
-                    output += resultLines[i] + '\n';
+                    output += line + _sourceLineEnding;
                 }
 
                 return output;
             }
-            catch (Exception ex)
+            catch
             {
                 return string.Empty;
             }
