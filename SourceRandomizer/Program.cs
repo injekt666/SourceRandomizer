@@ -4,7 +4,7 @@ using System.IO;
 
 namespace SourceRandomizer
 {
-    class Program
+    internal static class Program
     {
         private static readonly List<string> SourcePaths = new List<string>();
         private static string _sourceExtension;
@@ -158,7 +158,13 @@ namespace SourceRandomizer
                         }
 
                         // Replace
-                        modFile = modFile.Replace(match, output);
+                        var index = modFile.IndexOf(match);
+                        var length = match.Length;
+                        modFile = modFile.Remove(index, length);
+                        modFile = modFile.Insert(index, output);
+
+                        // Old
+                        //modFile = modFile.Replace(match, output);
                     }
                     // Use blocks randomizer
                     else
@@ -187,8 +193,15 @@ namespace SourceRandomizer
                         // Replace
                         for (int i = 0; i < blocks.Count; i++)
                         {
-                            var tempBlock = blocksRandomized[i].Insert(1, "/*[temp]*/");
-                            modFile = modFile.Replace(blocks[i], tempBlock);
+                            var output = blocksRandomized[i].Insert(1, "/*[temp]*/");
+
+                            var index = modFile.IndexOf(blocks[i]);
+                            var length = blocks[i].Length;
+                            modFile = modFile.Remove(index, length);
+                            modFile = modFile.Insert(index, output);
+
+                            // Old
+                            //modFile = modFile.Replace(blocks[i], tempBlock);
                         }
                     }
                 }
@@ -228,26 +241,24 @@ namespace SourceRandomizer
 
         private static string GetBetween(string source, string p1, string p2, int offset)
         {
-            try
-            {
-                var result = source.Split(new[] { p1 }, StringSplitOptions.None)[offset + 1];
-                var resultLines = result.Split(new [] { _sourceLineFormat }, StringSplitOptions.None);
-                var output = string.Empty;
+            var splitArray = source.Split(new[] { p1 }, StringSplitOptions.None);
 
-                foreach (string line in resultLines)
-                {
-                    if (line.Contains(p2))
-                        break;
-
-                    output += line + _sourceLineFormat;
-                }
-
-                return output;
-            }
-            catch
-            {
+            if (splitArray.Length - 1 < offset + 1)
                 return string.Empty;
+
+            var result = splitArray[offset + 1];
+            var resultLines = result.Split(new[] { _sourceLineFormat }, StringSplitOptions.None);
+            var output = string.Empty;
+
+            foreach (string line in resultLines)
+            {
+                if (line.Contains(p2))
+                    break;
+
+                output += line + _sourceLineFormat;
             }
+
+            return output;
         }
     }
 }
