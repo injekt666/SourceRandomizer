@@ -10,4 +10,5 @@ Also you have to provide some arguments to make this tool work:
 * -e [ext] - File extension of your source files (cs, cpp etc.)
 * -c [tag] - Comment tag that you are using (//)
 * -crlf|-lf - Text format that you are using **IMPORTANT**
-[Visual Studio extension to force text format](http://www.grebulon.com/software/stripem.php)
+
+[Easy VS extension to force all code to one text format](http://www.grebulon.com/software/stripem.php)
