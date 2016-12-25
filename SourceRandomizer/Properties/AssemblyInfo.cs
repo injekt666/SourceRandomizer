@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SourceRandomizer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Zaczero")]
 [assembly: AssemblyProduct("SourceRandomizer")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("GNU General Public License V3")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
