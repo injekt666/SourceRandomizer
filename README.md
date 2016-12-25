@@ -15,3 +15,4 @@ Also you have to provide some arguments to make this tool work:
 
 #### Example of ready build event:
 "{path}\SourceRandomizer.exe" -s "{path}\MyProject" -e ".cs" -c "//" -crlf
+## Usage
