@@ -14,4 +14,4 @@ Also you have to provide some arguments to make this tool work:
 [Easy VS extension to force all code to one text format](http://www.grebulon.com/software/stripem.php)
 
 #### Example of ready build event:
-"C:\{path}\SourceRandomizer.exe" -s "C:\{path}\MyProject" -e ".cs" -c "//" -crlf
+"{path}\SourceRandomizer.exe" -s "{path}\MyProject" -e ".cs" -c "//" -crlf
