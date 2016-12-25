@@ -20,10 +20,8 @@ Also you have to provide some arguments to make this tool work:
 
 ## Usage
 Currently there are availible 2 comment tags that you can use:
-* [swap] / [/swap]
-* [block] / [/block]
 
-### Swap
+### 1. [swap]
 ```
 //[swap]
 int var1 = 0;
@@ -33,4 +31,54 @@ string var4 = string.Empty;
 //[/swap]
 ```
 
-Will be randomized to:
+will be randomized into:
+```
+//[swap]
+string var4 = string.Empty;
+int var1 = 0;
+string var3 = "";
+int var2 = 1;
+//[/swap]
+```
+
+### 2. [block]
+```
+switch (stringValue)
+{
+  //[swap]
+  //[block]
+  case "1":
+    break;
+  //[/block]
+  //[block]
+  case "2":
+    break;
+  //[/block]
+  //[block]
+  case "3":
+    break;
+  //[/block]
+  //[/swap]
+}
+```
+
+will be randomized into:
+```
+switch (stringValue)
+{
+  //[swap]
+  //[block]
+  case "2":
+    break;
+  //[/block]
+  //[block]
+  case "3":
+    break;
+  //[/block]
+    //[block]
+  case "1":
+    break;
+  //[/block]
+  //[/swap]
+}
+```
