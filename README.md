@@ -12,7 +12,18 @@ Also you have to provide some arguments to make this tool work:
 * -crlf|-lf - Text format that you are using **IMPORTANT**
 
 [Easy VS extension to force all code to one text format](http://www.grebulon.com/software/stripem.php)
-
 #### Example of ready build event:
 "{path}\SourceRandomizer.exe" -s "{path}\MyProject" -e ".cs" -c "//" -crlf
 ## Usage
+Currently there are availible 2 comment tags that you can use:
+* [swap] / [/swap]
+* [block] / [/block]
+### Swap
+//[swap]
+int var1 = 0;
+int var2 = 1;
+string var3 = "";
+string var4 = string.Empty;
+//[/swap]
+
+Will be randomized to:
