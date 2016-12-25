@@ -4,7 +4,7 @@ With this tool you can easily randomize your source code every build!
 There are 2 important steps that you have to do before using it.
 ### 1. Setup a build event
 [How to run an exe on a build event](http://stackoverflow.com/a/7704362)
-#### 2. Arguments
+### 2. Arguments
 Also you have to provide some arguments to make this tool work:
 * -s "[path]" - Full directory path where SourceRandomizer will scan for all source files
 * -e "[ext]" - File extension of your source files (cs, cpp etc.)
