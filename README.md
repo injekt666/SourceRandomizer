@@ -1,5 +1,6 @@
 # SourceRandomizer
 With this tool you can easily randomize your source code every build!
+
 There are 2 important steps that you have to do before using it.
 ### 1. Setup a build event
 [How to run an exe on a build event](http://stackoverflow.com/a/7704362)
