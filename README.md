@@ -10,7 +10,7 @@ There are 2 important steps that you have to do before using it.
 * -s "[path]" - Full directory path where SourceRandomizer will scan for all source files
 * -e "[ext]" - File extension of your source files *(cs, cpp etc.)*
 * -c "[tag]" - Comment tag that you are using *(//)*
-* -crlf|-lf - Text format that you are using **IMPORTANT**
+* -crlf / -lf - Text format that you are using **IMPORTANT**
 
 [Easy VS extension to force all code to one text format](http://www.grebulon.com/software/stripem.php)
 
