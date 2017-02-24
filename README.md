@@ -15,7 +15,7 @@ There are 2 important steps that you have to do before using it.
 [Easy VS extension to force all code to one text format](http://www.grebulon.com/software/stripem.php)
 
 #### Example of ready build event arguments:
-"{path}\SourceRandomizer.exe" -s "{path}\MyProject" -e ".cs" -c "//" -crlf
+"..\SourceRandomizer.exe" -s "..\MyProject" -e ".cs" -c "//" -crlf
 
 ## Usage
 Currently there are availible 2 tags that you can use to randomize your source-code:
