@@ -1,5 +1,5 @@
 # SourceRandomizer
-With this tool you can easily randomize your source code on every build!
+With this tool you can easily randomize your source-code on every build!
 
 There are 2 important steps that you have to do before using it.
 
@@ -18,7 +18,7 @@ There are 2 important steps that you have to do before using it.
 "{path}\SourceRandomizer.exe" -s "{path}\MyProject" -e ".cs" -c "//" -crlf
 
 ## Usage
-Currently there are availible 2 tags that you can use to randomize your source code:
+Currently there are availible 2 tags that you can use to randomize your source-code:
 
 ### [swap]
 ```
