@@ -47,32 +47,23 @@ namespace SourceRandomizer
             if (solutionPath == string.Empty)
             {
                 Console.WriteLine("Solution not found (-s)");
-                Console.ReadKey();
+                Console.ReadLine();
                 Environment.Exit(1);
             }
 
             if (_sourceExtension == string.Empty)
             {
                 Console.WriteLine("Extension not found (-e)");
-                Console.ReadKey();
+                Console.ReadLine();
                 Environment.Exit(1);
             }
 
             if (comment == string.Empty)
             {
                 Console.WriteLine("Comment not found (-c)");
-                Console.ReadKey();
+                Console.ReadLine();
                 Environment.Exit(1);
             }
-
-            /* - old -
-            if (_sourceLineFormat == string.Empty)
-            {
-                Console.WriteLine("Line format not found (-lf/-crlf)");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-            */
 
             if (!_sourceExtension.Contains("."))
                 _sourceExtension = "." + _sourceExtension;
