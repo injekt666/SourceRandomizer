@@ -20,7 +20,7 @@ There are 2 important steps that you have to do before using it.
 ## Usage
 Currently there are availible 2 tags that you can use to randomize your source-code:
 
-### s like 'swap'
+### 1. s like 'swap'
 ```
 //s
 int var1 = 0;
@@ -40,7 +40,7 @@ int var2 = 1;
 //sc
 ```
 
-### b like 'block'
+### 2. b like 'block'
 ```
 switch (stringValue)
 {
