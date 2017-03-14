@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace SourceRandomizer
 {
@@ -16,7 +17,7 @@ namespace SourceRandomizer
             var comment = string.Empty;
 
             // Get arguments
-            for (int i = 0; i < args.Length; i++)
+            for (var i = 0; i < args.Length; i++)
             {
                 switch (args[i])
                 {
@@ -64,12 +65,14 @@ namespace SourceRandomizer
                 Environment.Exit(1);
             }
 
+            /* - old -
             if (_sourceLineFormat == string.Empty)
             {
                 Console.WriteLine("Line format not found (-lf/-crlf)");
                 Console.ReadKey();
                 Environment.Exit(1);
             }
+            */
 
             if (!_sourceExtension.Contains("."))
                 _sourceExtension = "." + _sourceExtension;
@@ -78,25 +81,32 @@ namespace SourceRandomizer
 
             var rnd = new Random(Environment.TickCount);
 
-            var searchTemplate = comment + "[{1}{0}]";
+            var searchTemplate = comment + "{0}{1}";
             var openTemplate = string.Empty;
-            var closeTag = "/";
-
+            var closeTag = "c";
+            
             // Foreach file found
             foreach (var sourcePath in SourcePaths)
             {
                 var sourceFile = File.ReadAllText(sourcePath);
                 var modFile = sourceFile;
+                var lineFormat = _sourceLineFormat;
+
+                // Automatic line format detection
+                if (lineFormat == string.Empty)
+                {
+                    lineFormat = lineFormat.Contains("\r\n") ? "\r\n" : "\n";
+                }
 
                 // Swap lines
-                var swapLineOpen = searchTemplate.Replace("{0}", "swap").Replace("{1}", openTemplate) + _sourceLineFormat;
-                var swapLineClose = searchTemplate.Replace("{0}", "swap").Replace("{1}", closeTag);
+                var swapLineOpen = searchTemplate.Replace("{0}", "s").Replace("{1}", openTemplate) + lineFormat;
+                var swapLineClose = searchTemplate.Replace("{0}", "s").Replace("{1}", closeTag);
                 var swapLines = new List<string>();
 
-                // Get all matches
-                for (int i = 0; i < int.MaxValue; i++)
+                // Get all matches (s tag)
+                for (var i = 0; i < int.MaxValue; i++)
                 {
-                    var result = GetBetween(modFile, swapLineOpen, swapLineClose, i);
+                    var result = GetBetween(modFile, swapLineOpen, swapLineClose, i, lineFormat);
 
                     if (result == string.Empty)
                         break;
@@ -108,14 +118,14 @@ namespace SourceRandomizer
                 foreach (var match in swapLines)
                 {
                     // Block
-                    var blockOpen = searchTemplate.Replace("{0}", "block").Replace("{1}", openTemplate) + _sourceLineFormat;
-                    var blockClose = searchTemplate.Replace("{0}", "block").Replace("{1}", closeTag);
+                    var blockOpen = searchTemplate.Replace("{0}", "b").Replace("{1}", openTemplate) + lineFormat;
+                    var blockClose = searchTemplate.Replace("{0}", "b").Replace("{1}", closeTag);
                     var blocks = new List<string>();
 
-                    // Get all matches
-                    for (int i = 0; i < int.MaxValue; i++)
+                    // Get all matches (b tag)
+                    for (var i = 0; i < int.MaxValue; i++)
                     {
-                        var result = GetBetween(match, blockOpen, blockClose, i);
+                        var result = GetBetween(match, blockOpen, blockClose, i, lineFormat);
 
                         if (result == string.Empty)
                             break;
@@ -126,9 +136,9 @@ namespace SourceRandomizer
                     // Use line randomizer
                     if (blocks.Count == 0)
                     {
-                        var lines = match.Split(new[] {_sourceLineFormat}, StringSplitOptions.None);
+                        var lines = match.Split(new[] { lineFormat }, StringSplitOptions.None);
                         var linesRandomized = new string[lines.Length - 1];
-                        var output = string.Empty;
+                        var outputSb = new StringBuilder();
 
                         // Randomize lines
                         foreach (var line in lines)
@@ -150,21 +160,18 @@ namespace SourceRandomizer
                         }
 
                         // Create output
-                        foreach (string line in linesRandomized)
+                        foreach (var line in linesRandomized)
                         {
                             var tempLine = line.Insert(1, "/*[temp]*/");
-                            output += tempLine;
-                            output += _sourceLineFormat;
+                            outputSb.Append(tempLine);
+                            outputSb.Append(lineFormat);
                         }
 
                         // Replace
                         var index = modFile.IndexOf(match);
                         var length = match.Length;
                         modFile = modFile.Remove(index, length);
-                        modFile = modFile.Insert(index, output);
-
-                        // Old
-                        //modFile = modFile.Replace(match, output);
+                        modFile = modFile.Insert(index, outputSb.ToString());
                     }
                     // Use blocks randomizer
                     else
@@ -191,7 +198,7 @@ namespace SourceRandomizer
                         }
 
                         // Replace
-                        for (int i = 0; i < blocks.Count; i++)
+                        for (var i = 0; i < blocks.Count; i++)
                         {
                             var output = blocksRandomized[i].Insert(1, "/*[temp]*/");
 
@@ -199,9 +206,6 @@ namespace SourceRandomizer
                             var length = blocks[i].Length;
                             modFile = modFile.Remove(index, length);
                             modFile = modFile.Insert(index, output);
-
-                            // Old
-                            //modFile = modFile.Replace(blocks[i], tempBlock);
                         }
                     }
                 }
@@ -222,7 +226,7 @@ namespace SourceRandomizer
         private static void ProcessFiles(string path)
         {
             var files = Directory.GetFiles(path);
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 var extension = Path.GetExtension(file);
 
@@ -233,13 +237,13 @@ namespace SourceRandomizer
             }
 
             var directories = Directory.GetDirectories(path);
-            foreach (string directory in directories)
+            foreach (var directory in directories)
             {
                 ProcessFiles(directory);
             }
         }
 
-        private static string GetBetween(string source, string p1, string p2, int offset)
+        private static string GetBetween(string source, string p1, string p2, int offset, string lineFormat)
         {
             var splitArray = source.Split(new[] { p1 }, StringSplitOptions.None);
 
@@ -247,15 +251,15 @@ namespace SourceRandomizer
                 return string.Empty;
 
             var result = splitArray[offset + 1];
-            var resultLines = result.Split(new[] { _sourceLineFormat }, StringSplitOptions.None);
+            var resultLines = result.Split(new[] { lineFormat }, StringSplitOptions.None);
             var output = string.Empty;
 
-            foreach (string line in resultLines)
+            foreach (var line in resultLines)
             {
                 if (line.Contains(p2))
                     break;
 
-                output += line + _sourceLineFormat;
+                output += line + lineFormat;
             }
 
             return output;
