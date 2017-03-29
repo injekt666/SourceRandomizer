@@ -22,7 +22,7 @@ namespace SourceRandomizer
                 switch (args[i])
                 {
                     case "-s":
-                        solutionPath = args[i + 1];
+                        solutionPath = args[i + 1].TrimEnd('\\', '/');
                         break;
 
                     case "-e":
